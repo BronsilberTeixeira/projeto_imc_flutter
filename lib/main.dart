@@ -15,13 +15,16 @@ class _HomeState extends State<Home> {
 TextEditingController pesoController = TextEditingController();
 TextEditingController alturaController = TextEditingController();
 
+GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 String textoInformativo = "Informe seus dados de Peso e Altura";
 
 void resetarCampos(){
   pesoController.text = '';
   alturaController.text = '';
   setState(() {
-  textoInformativo = "Informe seus dados de Peso e Altura";
+    textoInformativo = "Informe seus dados de Peso e Altura";
+    _formKey = GlobalKey<FormState>();
   });
 }
 
@@ -60,46 +63,63 @@ void calcularIMC(){
       backgroundColor: Colors.blueGrey[900],
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-          child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Icon(Icons.person_outline, size: 120.0, color: Colors.deepPurple),
-              TextField(keyboardType: TextInputType.number, 
-                decoration: InputDecoration(
-                  labelText: 'Peso em KG',
-                  labelStyle: TextStyle(color: Colors.deepPurple[300])
+          child: Form(
+            child: Column(
+              key: _formKey,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Icon(Icons.person_outline, size: 120.0, color: Colors.deepPurple),
+                  TextFormField(keyboardType: TextInputType.number, 
+                    decoration: InputDecoration(
+                      labelText: 'Peso em KG',
+                      labelStyle: TextStyle(color: Colors.deepPurple[300])
+                      ),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.deepPurple[300], fontSize: 20.0),
+                  controller: pesoController,
+                  validator: (value) {
+                    if(value.isEmpty){
+                     return "Insira seu peso!";
+                   }
+                  },
                   ),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.deepPurple[300], fontSize: 20.0),
-              controller: pesoController,
-              ),
-                TextField(keyboardType: TextInputType.number, 
-                decoration: InputDecoration(
-                  labelText: 'Altura em cm',
-                  labelStyle: TextStyle(color: Colors.deepPurple[300])
+                    TextFormField(keyboardType: TextInputType.number, 
+                    decoration: InputDecoration(
+                      labelText: 'Altura em cm',
+                      labelStyle: TextStyle(color: Colors.deepPurple[300])
+                      ),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.deepPurple[300], fontSize: 20.0),
+                  controller: alturaController,
+                  validator: (value){
+                   if(value.isEmpty){
+                     return "Insira sua altura";
+                   }
+                  },
                   ),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.deepPurple[300], fontSize: 20.0),
-              controller: alturaController,
-              ),
-          Padding( 
-            padding: EdgeInsets.only(top: 20, bottom: 20),
-            child: Container(
-              height: 50.0,
-              child:  RaisedButton(onPressed: calcularIMC,
-                child: Text('Calcular', 
-                  style: TextStyle(color: Colors.white, fontSize: 15.0)
+              Padding( 
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                child: Container(
+                  height: 50.0,
+                  child:  RaisedButton(onPressed: () {
+                    if(_formKey.currentState.validate()){
+                      calcularIMC();
+                    }
+                  },
+                    child: Text('Calcular', 
+                      style: TextStyle(color: Colors.white, fontSize: 15.0)
+                    ),
+                    color: Colors.deepPurple[300],
+                  ),
                 ),
-                color: Colors.deepPurple[300],
               ),
+              Text(textoInformativo,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.deepPurple[300], fontSize: 30.0),
+              )
+              ],
             ),
-          ),
-          Text(textoInformativo,
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.deepPurple[300], fontSize: 30.0),
           )
-          ],
-        ),
       )
     );
   }
